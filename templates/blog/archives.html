@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}归档页面{% endblock title %}
+
+{% block content %}
+ <section class="post">
+        {% for year in years %}
+             <header class="post-header">
+            <h2 class="post-title">{{ year.year }}</h2>
+
+            {% for post in post_list %}
+                {% if year.year == post.created_time.year %}
+                 <p class="post-meta">
+                  <h2 ><a  class="post-author"  href="{{ post.get_absolute_url }}">{{ post.title_name }}</a><small>
+                        Time:<time>{{ post.created_time | date:'m-d' }}</time>
+                    </small></h2>
+
+                 </p>
+                    </header>
+
+                {% endif %}
+            {% endfor %}
+
+        {% empty %}
+            找不到任何文章!
+        {% endfor %}
+        </section>
+{% endblock %}
