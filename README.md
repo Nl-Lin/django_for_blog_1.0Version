@@ -2,6 +2,7 @@
 
 comment/models.py
 # 一级评论
+```python
 class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments', default='')  # 被评论的文章
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')  # 评论者
@@ -13,9 +14,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.body[:20]
+```
 
 blog/views.py
 # 分页
+```python
   def Pagination(self, post_list, page):  # 分类器,分类函数
         paginator = Paginator(post_list, self.per_page)
         try:
@@ -25,9 +28,12 @@ blog/views.py
         except EmptyPage:
             post_list = paginator.page(paginator.num_pages)
         return post_list
+```    
+
 blog/views.py
 # markdown
 
+```python
 def MD():
     return markdown.Markdown(extensions=[
         'markdown.extensions.extra',
@@ -35,3 +41,4 @@ def MD():
         'markdown.extensions.toc',
         TocExtension(slugify=slugify),
     ])
+``` 
