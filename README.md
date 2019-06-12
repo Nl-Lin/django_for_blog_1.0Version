@@ -1,5 +1,37 @@
 # django_for_blog_1.0Version
 
-### 分页函数
-<div class="output_wrapper" id="output_wrapper_id" style="font-size: 16px; color: rgb(62, 62, 62); line-height: 1.6; word-spacing: 0px; letter-spacing: 0px; font-family: 'Helvetica Neue', Helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;"><pre style="font-size: inherit; color: inherit; line-height: inherit; margin: 0px; padding: 0px;"><code class="python language-python hljs" style="overflow-wrap: break-word; margin: 0px 2px; line-height: 18px; font-size: 14px; font-weight: normal; word-spacing: 0px; letter-spacing: 0px; font-family: Consolas, Inconsolata, Courier, monospace; border-radius: 0px; overflow-x: auto; padding: 0.5em; background: rgb(43, 43, 43); color: rgb(186, 186, 186); display: block !important; white-space: pre !important; word-wrap: normal !important; word-break: normal !important; overflow: auto !important;">&nbsp;<span class="hljs-function" style="font-size: inherit; color: inherit; line-height: inherit; margin: 0px; padding: 0px; word-wrap: inherit !important; word-break: inherit !important;"><span class="hljs-keyword" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(203, 120, 50); word-wrap: inherit !important; word-break: inherit !important;">def</span>&nbsp;<span class="hljs-title" style="font-size: inherit; color: inherit; line-height: inherit; margin: 0px; padding: 0px; word-wrap: inherit !important; word-break: inherit !important;">Pagination</span><span class="hljs-params" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(185, 185, 185); word-wrap: inherit !important; word-break: inherit !important;">(self,&nbsp;post_list,&nbsp;page)</span>:</span>&nbsp;&nbsp;<span class="hljs-comment" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(127, 127, 127); word-wrap: inherit !important; word-break: inherit !important;">#&nbsp;分类器,分类函数</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paginator&nbsp;=&nbsp;Paginator(post_list,&nbsp;self.per_page)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-keyword" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(203, 120, 50); word-wrap: inherit !important; word-break: inherit !important;">try</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;post_list&nbsp;=&nbsp;paginator.page(page)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-keyword" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(203, 120, 50); word-wrap: inherit !important; word-break: inherit !important;">except</span>&nbsp;PageNotAnInteger:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;post_list&nbsp;=&nbsp;paginator.page(<span class="hljs-number" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(104, 150, 186); word-wrap: inherit !important; word-break: inherit !important;">1</span>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-keyword" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(203, 120, 50); word-wrap: inherit !important; word-break: inherit !important;">except</span>&nbsp;EmptyPage:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;post_list&nbsp;=&nbsp;paginator.page(paginator.num_pages)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="hljs-keyword" style="font-size: inherit; line-height: inherit; margin: 0px; padding: 0px; color: rgb(203, 120, 50); word-wrap: inherit !important; word-break: inherit !important;">return</span>&nbsp;post_list<br></code></pre></div>
+comment/models.py
+# 一级评论
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments', default='')  # 被评论的文章
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')  # 评论者
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('created',)
+
+    def __str__(self):
+        return self.body[:20]
+
+blog/views.py
+# 分页
+  def Pagination(self, post_list, page):  # 分类器,分类函数
+        paginator = Paginator(post_list, self.per_page)
+        try:
+            post_list = paginator.page(page)
+        except PageNotAnInteger:
+            post_list = paginator.page(1)
+        except EmptyPage:
+            post_list = paginator.page(paginator.num_pages)
+        return post_list
+blog/views.py
+# markdown
+
+def MD():
+    return markdown.Markdown(extensions=[
+        'markdown.extensions.extra',
+        'markdown.extensions.codehilite',
+        'markdown.extensions.toc',
+        TocExtension(slugify=slugify),
+    ])
