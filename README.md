@@ -1,6 +1,6 @@
 # django_for_blog_1.0Version
 
-comment/models.py
+
 # 一级评论
 ```python
 class Comment(models.Model):
@@ -15,8 +15,8 @@ class Comment(models.Model):
     def __str__(self):
         return self.body[:20]
 ```
+comment/models.py
 
-blog/views.py
 # 分页
 ```python
   def Pagination(self, post_list, page):  # 分类器,分类函数
@@ -29,8 +29,8 @@ blog/views.py
             post_list = paginator.page(paginator.num_pages)
         return post_list
 ```    
-
 blog/views.py
+
 # markdown
 
 ```python
@@ -42,3 +42,6 @@ def MD():
         TocExtension(slugify=slugify),
     ])
 ``` 
+blog/views.py
+
+> 溜了~溜了~
